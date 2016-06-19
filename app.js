@@ -121,11 +121,11 @@ function ledOnOff() {
     var pin    = random[amount - 1];
 
     chosen.push(leds.led[pin].pin);
-    leds.led[pin].on();
 
     board.wait(TIME, function(){
-        leds.led[pin].off();
+        leds.led[pin].on();
         board.wait(TIME, function(){
+            leds.led[pin].off();
             amount = --leds.amount;
 
             if(amount >= 1) {
