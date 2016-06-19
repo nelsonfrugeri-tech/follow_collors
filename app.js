@@ -53,28 +53,28 @@ function gameOver() {
 function match() {
     for(var i = 0; i < amount; i++) {
         switch (chosen[i]) {
-            // Branco
+            // White
             case 2:
                 if(btnPress[i] !== 10) {
                     gameOver();
                     return false;
                 }
                 break;
-            // Vermelho
+            // Red
             case 3:
                 if(btnPress[i] !== 11) {
                     gameOver();
                     return false;
                 }
                 break;
-            // Amarelo
+            // Yellow
             case 4:
                 if(btnPress[i] !== 12) {
                     gameOver();
                     return false;
                 }
                 break;
-            // Verde
+            // Green
             case 5:
                 if(btnPress[i] !== 13) {
                     gameOver();
