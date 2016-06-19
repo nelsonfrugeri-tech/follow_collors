@@ -1,44 +1,80 @@
-var five   = require('johnny-five');
-var board  = new five.Board();
-var chosen = [];
-var amount = 4;
-var random = gerRandom(amount);
+"use strict";
+
+var five     = require('johnny-five');
+var board    = new five.Board();
+const TIME   = 2000;
+var chosen   = [];
+var amount   = 0;
+var random   = [];
+var array    = null;
+var leds     = {};
+var btnPress = [];
+var counter  = 0;
+var buttons  = null;
 
 board.on("ready", function() {
-    var array = new five.Leds([5, 4, 3, 2]);
-    var leds  = {
-        led: array,
-        amount: random.length
+    // Create leds
+    array = new five.Leds([5, 4, 3, 2]);
+    leds  = {
+        led: array
     };
+    // Create buttons
+    buttons = new five.Buttons({
+        pins: [13, 12, 11, 10],
+        isPullup: true
+    });
 
-    ledOnOff(eventButtons, leds, 2000);
+    start();
+    eventButtons();
 });
 
-function gameOver() {
-    console.log("Game Over!");
+function start() {
+    if(amount <= 20) {
+        // For buttom event
+        btnPress    = [];
+        counter     = 0;
+        // For led event
+        chosen      = [];
+        random      = gerRandom(++amount);
+        leds.amount = random.length;
+
+        console.log("Game "+amount);
+        ledOnOff();
+    }
+    else {
+        console.log("Glorious in Victory!")
+    }
 }
 
-function match(btnPress) {
+function gameOver() {
+    console.log("Game Over");
+}
+
+function match() {
     for(var i = 0; i < amount; i++) {
         switch (chosen[i]) {
+            // Branco
             case 2:
                 if(btnPress[i] !== 10) {
                     gameOver();
                     return false;
                 }
                 break;
+            // Vermelho
             case 3:
                 if(btnPress[i] !== 11) {
                     gameOver();
                     return false;
                 }
                 break;
+            // Amarelo
             case 4:
                 if(btnPress[i] !== 12) {
                     gameOver();
                     return false;
                 }
                 break;
+            // Verde
             case 5:
                 if(btnPress[i] !== 13) {
                     gameOver();
@@ -51,65 +87,60 @@ function match(btnPress) {
         }
     }
 
-    console.log("Glorious Victory!");
+    setTimeout(function(){
+        start();
+    }, TIME);
 }
 
-function eventButtons(leds) {
-    var btnPress = [];
-    var counter  = 0;
-    // Create buttons
-    var buttons = new five.Buttons({
-        pins: [13, 12, 11, 10],
-        isPullup: true
-    });
-
+function eventButtons() {
     buttons.on("press", function(button) {
-        pressAndRelease(button, leds, "on");
+        pressAndRelease(button, "on");
 
         if(counter < amount) {
             btnPress.push(button.pin);
             counter++;
         }
 
+        console.log("btnPress");
+        console.log(btnPress);
+
         if(counter === amount) {
-            match(btnPress);
-            return false;
+            match();
         }
     });
 
     buttons.on("release", function(button) {
-        pressAndRelease(button, leds, "off");
+        pressAndRelease(button, "off");
     });
 
 }
 
 // Recursive for on and off leds
-function ledOnOff(eventButtons, leds, time) {
+function ledOnOff() {
     var amount = leds.amount;
     var pin    = random[amount - 1];
 
     chosen.push(leds.led[pin].pin);
     leds.led[pin].on();
 
-    board.wait(time, function(){
+    board.wait(TIME, function(){
         leds.led[pin].off();
-
-        board.wait(time, function(){
+        board.wait(TIME, function(){
             amount = --leds.amount;
 
             if(amount >= 1) {
-                ledOnOff(eventButtons, leds, time);
+                ledOnOff();
             }
             else {
-                eventButtons(leds);
-                return false;
+                console.log("chosen");
+                console.log(chosen);
             }
         });
     });
 }
 
 // Press and release buttom
-function pressAndRelease(button, leds, flag) {
+function pressAndRelease(button, flag) {
     switch(button.pin) {
         case 13:
             flag === "on" ? leds.led[0].on() : leds.led[0].off();
