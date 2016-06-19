@@ -6,6 +6,7 @@
 * Four Buttons
 * Four resistors
 * Fifteen Jumpers
+* One Protoboard
 
 ## Install Node.js
 * https://www.digitalocean.com/community/tutorials/como-instalar-o-node-js-em-um-servidor-ubuntu-14-04-pt
