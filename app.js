@@ -3,6 +3,7 @@
 var five     = require('johnny-five');
 var board    = new five.Board();
 const TIME   = 2000;
+const MOVE   = 20;
 var chosen   = [];
 var amount   = 0;
 var random   = [];
@@ -12,6 +13,8 @@ var btnPress = [];
 var counter  = 0;
 var buttons  = null;
 
+
+// Responsible for create leds, buttons and load function start and eventButtons
 board.on("ready", function() {
     // Create leds
     array = new five.Leds([5, 4, 3, 2]);
@@ -28,21 +31,25 @@ board.on("ready", function() {
     eventButtons();
 });
 
+/*
+    Check if there is move, case yes then initialize variables and generate randowm number
+    for next sequence
+*/
 function start() {
-    if(amount <= 20) {
+    if(amount <= MOVE) {
         // For buttom event
         btnPress    = [];
         counter     = 0;
-        // For led event
+        // For sequence event
         chosen      = [];
         random      = gerRandom(++amount);
         leds.amount = random.length;
 
-        console.log("Game "+amount);
-        ledOnOff();
+        console.log("Game " + amount);
+        sequence();
     }
     else {
-        console.log("Glorious in Victory!")
+        console.log("Glorious in Victory!");
     }
 }
 
@@ -50,6 +57,9 @@ function gameOver() {
     console.log("Game Over");
 }
 
+/*
+    Through each value of the button pressed and check its corresponding color
+*/
 function match() {
     for(var i = 0; i < amount; i++) {
         switch (chosen[i]) {
@@ -87,11 +97,15 @@ function match() {
         }
     }
 
+    // Next move
     setTimeout(function(){
         start();
     }, TIME);
 }
 
+/*
+    Wait button press until the entire sequence is complete, to so do match
+*/
 function eventButtons() {
     buttons.on("press", function(button) {
         pressAndRelease(button, "on");
@@ -116,7 +130,7 @@ function eventButtons() {
 }
 
 // Recursive for on and off leds
-function ledOnOff() {
+function sequence() {
     var amount = leds.amount;
     var pin    = random[amount - 1];
 
@@ -129,7 +143,7 @@ function ledOnOff() {
             amount = --leds.amount;
 
             if(amount >= 1) {
-                ledOnOff();
+                sequence();
             }
             else {
                 console.log("chosen");
@@ -139,7 +153,7 @@ function ledOnOff() {
     });
 }
 
-// Press and release buttom
+// Press and release button for on/off the led
 function pressAndRelease(button, flag) {
     switch(button.pin) {
         case 13:
