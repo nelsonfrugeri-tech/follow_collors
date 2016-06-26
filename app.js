@@ -45,11 +45,11 @@ function start() {
         random      = gerRandom(++amount);
         leds.amount = random.length;
 
-        console.log("Game " + amount);
+        console.log(" *--- Move " + amount + "---* \n");
         sequence();
     }
     else {
-        console.log("Glorious in Victory!");
+        console.log("*--- Glorious in Victory ---*");
     }
 }
 
@@ -61,6 +61,9 @@ function gameOver() {
     Through each value of the button pressed and check its corresponding color
 */
 function match() {
+    // MY DEBUGGER
+    myDebugger("btnPress", btnPress);
+
     for(var i = 0; i < amount; i++) {
         switch (chosen[i]) {
             // White
@@ -115,9 +118,6 @@ function eventButtons() {
             counter++;
         }
 
-        console.log("btnPress");
-        console.log(btnPress);
-
         if(counter === amount) {
             match();
         }
@@ -146,8 +146,8 @@ function sequence() {
                 sequence();
             }
             else {
-                console.log("chosen");
-                console.log(chosen);
+                // MY DEBUGGER
+                myDebugger("chosen", chosen);
             }
         });
     });
@@ -183,4 +183,48 @@ function gerRandom(amount) {
     }
 
     return random;
+}
+
+function myDebugger(goDebugger, options) {
+    if(goDebugger === "btnPress") {
+        console.log("The colors pressed are");
+        whatColors(options).forEach(function(color) {
+            console.log(color);
+        });
+        console.log("\n");
+    }
+    else if(goDebugger === "chosen") {
+        console.log("The colors of the sequence are");
+        whatColors(options).forEach(function(color) {
+            console.log(color);
+        });
+        console.log("\n");
+    }
+    else {
+        console.log("Error debugger")
+    }
+}
+
+function whatColors(pins) {
+    var colors = [];
+
+    pins.forEach(function(pin) {
+        if(pin === 10 || pin === 2) {
+            colors.push("White");
+        }
+        else if(pin === 11 || pin === 3) {
+            colors.push("Red");
+        }
+        else if(pin === 12 || pin === 4) {
+            colors.push("Yellow");
+        }
+        else if(pin === 13 || pin === 5) {
+            colors.push("Green");
+        }
+        else {
+            console.log("Error whatColors");
+        }
+    });
+
+    return colors;
 }
