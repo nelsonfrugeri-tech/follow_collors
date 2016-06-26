@@ -208,6 +208,7 @@ function myDebugger(goDebugger, options) {
 function whatColors(pins) {
     var colors = [];
 
+    // Buttons and Leds
     pins.forEach(function(pin) {
         if(pin === 10 || pin === 2) {
             colors.push("White");
