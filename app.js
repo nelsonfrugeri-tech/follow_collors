@@ -54,7 +54,12 @@ function start() {
 }
 
 function gameOver() {
+    ledsOff();
     console.log("Game Over");
+
+    setTimeout(function(){
+        process.exit(1);
+    }, TIME);
 }
 
 /*
@@ -70,28 +75,24 @@ function match() {
             case 2:
                 if(btnPress[i] !== 10) {
                     gameOver();
-                    return false;
                 }
                 break;
             // Red
             case 3:
                 if(btnPress[i] !== 11) {
                     gameOver();
-                    return false;
                 }
                 break;
             // Yellow
             case 4:
                 if(btnPress[i] !== 12) {
                     gameOver();
-                    return false;
                 }
                 break;
             // Green
             case 5:
                 if(btnPress[i] !== 13) {
                     gameOver();
-                    return false;
                 }
                 break;
             default:
@@ -184,6 +185,22 @@ function gerRandom(amount) {
 
     return random;
 }
+
+// Leds on/off
+function ledsOff(button) {
+    leds.led[0].on();
+    leds.led[1].on();
+    leds.led[2].on();
+    leds.led[3].on();
+    leds.led[0].off();
+    leds.led[1].off();
+    leds.led[2].off();
+    leds.led[3].off();
+}
+
+/*
+    Responsibles for debugger
+*/
 
 function myDebugger(goDebugger, options) {
     if(goDebugger === "btnPress") {
