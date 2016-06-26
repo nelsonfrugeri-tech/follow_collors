@@ -2,8 +2,8 @@
 
 var five     = require('johnny-five');
 var board    = new five.Board();
-const TIME   = 2000;
-const MOVE   = 20;
+const TIME   = 1000;
+const MOVE   = 19;
 var chosen   = [];
 var amount   = 0;
 var random   = [];
@@ -12,6 +12,8 @@ var leds     = {};
 var btnPress = [];
 var counter  = 0;
 var buttons  = null;
+var piezo    = null;
+var notes    = ["C - -", "D - -", "F - -", "G - -"];
 
 
 // Responsible for create leds, buttons and load function start and eventButtons
@@ -26,6 +28,8 @@ board.on("ready", function() {
         pins: [13, 12, 11, 10],
         isPullup: true
     });
+    // Create piezo
+    piezo = new five.Piezo(7);
 
     start();
     eventButtons();
@@ -138,6 +142,7 @@ function sequence() {
     chosen.push(leds.led[pin].pin);
 
     board.wait(TIME, function(){
+        sound(pin);
         leds.led[pin].on();
         board.wait(TIME, function(){
             leds.led[pin].off();
@@ -158,21 +163,29 @@ function sequence() {
 function pressAndRelease(button, flag) {
     switch(button.pin) {
         case 13:
-            flag === "on" ? leds.led[0].on() : leds.led[0].off();
+            flag === "on" ? (leds.led[0].on(), sound(0)) : leds.led[0].off();
             break;
         case 12:
-            flag === "on" ? leds.led[1].on() : leds.led[1].off();
+            flag === "on" ? (leds.led[1].on(), sound(1)) : leds.led[1].off();
             break;
         case 11:
-            flag === "on" ? leds.led[2].on() : leds.led[2].off();
+            flag === "on" ? (leds.led[2].on(), sound(2)) : leds.led[2].off();
             break;
         case 10:
-            flag === "on" ? leds.led[3].on() : leds.led[3].off();
+            flag === "on" ? (leds.led[3].on(), sound(3)) : leds.led[3].off();
             break;
         default:
             console.log("ERROR in function pressAndRelease!");
             break;
     }
+}
+
+function sound(position) {
+    piezo.play({
+        song: notes[position],
+        beats: 1 / 4,
+        tempo: 100
+    });
 }
 
 // Random numbers from zero to four (excluded five)
