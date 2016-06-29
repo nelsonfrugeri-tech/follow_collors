@@ -46,11 +46,11 @@ function start() {
         counter     = 0;
         // For sequence event
         chosen      = [];
-        random      = gerRandom(++amount);
+        random.push(gerRandom());
         leds.amount = random.length;
 
-        console.log(" *--- Move " + amount + "---* \n");
-        sequence();
+        console.log(" *--- Move " + ++amount + "---* \n");
+        sequence(0);
     }
     else {
         console.log("*--- Glorious in Victory ---*");
@@ -135,9 +135,8 @@ function eventButtons() {
 }
 
 // Recursive for on and off leds
-function sequence() {
-    var amount = leds.amount;
-    var pin    = random[amount - 1];
+function sequence(counterSeq) {
+    var pin = random[counterSeq];
 
     chosen.push(leds.led[pin].pin);
 
@@ -146,10 +145,10 @@ function sequence() {
         leds.led[pin].on();
         board.wait(TIME, function(){
             leds.led[pin].off();
-            amount = --leds.amount;
 
-            if(amount >= 1) {
-                sequence();
+            if(counterSeq < (leds.amount - 1)) {
+                counterSeq++;
+                sequence(counterSeq);
             }
             else {
                 // MY DEBUGGER
@@ -188,15 +187,9 @@ function sound(position) {
     });
 }
 
-// Random numbers from zero to four (excluded five)
-function gerRandom(amount) {
-    var random = [];
-
-    for(var i = 0; i < amount; i++) {
-        random.push(Math.floor(Math.random() * (3 - 0 + 1)) + 0);
-    }
-
-    return random;
+// Random number from zero to four (excluded five)
+function gerRandom() {
+    return Math.floor(Math.random() * (3 - 0 + 1)) + 0;
 }
 
 // Leds on/off
@@ -205,10 +198,13 @@ function ledsOff(button) {
     leds.led[1].on();
     leds.led[2].on();
     leds.led[3].on();
-    leds.led[0].off();
-    leds.led[1].off();
-    leds.led[2].off();
-    leds.led[3].off();
+
+    board.wait(800, function() {
+        leds.led[0].off();
+        leds.led[1].off();
+        leds.led[2].off();
+        leds.led[3].off();
+    });
 }
 
 /*
