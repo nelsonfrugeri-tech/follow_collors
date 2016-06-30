@@ -1,9 +1,20 @@
 "use strict";
 
-var five     = require('johnny-five');
-var board    = new five.Board();
 const TIME   = 1000;
 const MOVE   = 19;
+// Leds pin
+const ledWhite  = 2;
+const ledRed    = 3;
+const ledYellow = 4;
+const ledGreen  = 5;
+// Buttons pin
+const btnWhite  = 10;
+const btnRed    = 11;
+const btnYellow = 12;
+const btnGreen  = 13;
+
+var five     = require('johnny-five');
+var board    = new five.Board();
 var chosen   = [];
 var amount   = 0;
 var random   = [];
@@ -19,13 +30,13 @@ var notes    = ["C - -", "D - -", "F - -", "G - -"];
 // Responsible for create leds, buttons and load function start and eventButtons
 board.on("ready", function() {
     // Create leds
-    array = new five.Leds([5, 4, 3, 2]);
+    array = new five.Leds([ledGreen, ledYellow, ledRed, ledWhite]);
     leds  = {
         led: array
     };
     // Create buttons
     buttons = new five.Buttons({
-        pins: [13, 12, 11, 10],
+        pins: [btnGreen, btnYellow, btnRed, btnWhite],
         isPullup: true
     });
     // Create piezo
@@ -46,11 +57,11 @@ function start() {
         counter     = 0;
         // For sequence event
         chosen      = [];
-        random      = gerRandom(++amount);
+        random.push(gerRandom());
         leds.amount = random.length;
 
-        console.log(" *--- Move " + amount + "---* \n");
-        sequence();
+        console.log(" *--- Move " + ++amount + "---* \n");
+        sequence(0);
     }
     else {
         console.log("*--- Glorious in Victory ---*");
@@ -76,26 +87,26 @@ function match() {
     for(var i = 0; i < amount; i++) {
         switch (chosen[i]) {
             // White
-            case 2:
-                if(btnPress[i] !== 10) {
+            case ledWhite:
+                if(btnPress[i] !== btnWhite) {
                     gameOver();
                 }
                 break;
             // Red
-            case 3:
-                if(btnPress[i] !== 11) {
+            case ledRed:
+                if(btnPress[i] !== btnRed) {
                     gameOver();
                 }
                 break;
             // Yellow
-            case 4:
-                if(btnPress[i] !== 12) {
+            case ledYellow:
+                if(btnPress[i] !== btnYellow) {
                     gameOver();
                 }
                 break;
             // Green
-            case 5:
-                if(btnPress[i] !== 13) {
+            case ledGreen:
+                if(btnPress[i] !== btnGreen) {
                     gameOver();
                 }
                 break;
@@ -135,9 +146,8 @@ function eventButtons() {
 }
 
 // Recursive for on and off leds
-function sequence() {
-    var amount = leds.amount;
-    var pin    = random[amount - 1];
+function sequence(counterSeq) {
+    var pin = random[counterSeq];
 
     chosen.push(leds.led[pin].pin);
 
@@ -146,10 +156,10 @@ function sequence() {
         leds.led[pin].on();
         board.wait(TIME, function(){
             leds.led[pin].off();
-            amount = --leds.amount;
 
-            if(amount >= 1) {
-                sequence();
+            if(counterSeq < (leds.amount - 1)) {
+                counterSeq++;
+                sequence(counterSeq);
             }
             else {
                 // MY DEBUGGER
@@ -162,16 +172,16 @@ function sequence() {
 // Press and release button for on/off the led
 function pressAndRelease(button, flag) {
     switch(button.pin) {
-        case 13:
+        case btnGreen:
             flag === "on" ? (leds.led[0].on(), sound(0)) : leds.led[0].off();
             break;
-        case 12:
+        case btnYellow:
             flag === "on" ? (leds.led[1].on(), sound(1)) : leds.led[1].off();
             break;
-        case 11:
+        case btnRed:
             flag === "on" ? (leds.led[2].on(), sound(2)) : leds.led[2].off();
             break;
-        case 10:
+        case btnWhite:
             flag === "on" ? (leds.led[3].on(), sound(3)) : leds.led[3].off();
             break;
         default:
@@ -188,15 +198,9 @@ function sound(position) {
     });
 }
 
-// Random numbers from zero to four (excluded five)
-function gerRandom(amount) {
-    var random = [];
-
-    for(var i = 0; i < amount; i++) {
-        random.push(Math.floor(Math.random() * (3 - 0 + 1)) + 0);
-    }
-
-    return random;
+// Random number from zero to four (excluded five)
+function gerRandom() {
+    return Math.floor(Math.random() * (3 - 0 + 1)) + 0;
 }
 
 // Leds on/off
@@ -205,10 +209,13 @@ function ledsOff(button) {
     leds.led[1].on();
     leds.led[2].on();
     leds.led[3].on();
-    leds.led[0].off();
-    leds.led[1].off();
-    leds.led[2].off();
-    leds.led[3].off();
+
+    board.wait(800, function() {
+        leds.led[0].off();
+        leds.led[1].off();
+        leds.led[2].off();
+        leds.led[3].off();
+    });
 }
 
 /*
@@ -240,16 +247,16 @@ function whatColors(pins) {
 
     // Buttons and Leds
     pins.forEach(function(pin) {
-        if(pin === 10 || pin === 2) {
+        if(pin === btnWhite || pin === ledWhite) {
             colors.push("White");
         }
-        else if(pin === 11 || pin === 3) {
+        else if(pin === btnRed || pin === ledRed) {
             colors.push("Red");
         }
-        else if(pin === 12 || pin === 4) {
+        else if(pin === btnYellow || pin === ledYellow) {
             colors.push("Yellow");
         }
-        else if(pin === 13 || pin === 5) {
+        else if(pin === btnGreen || pin === ledGreen) {
             colors.push("Green");
         }
         else {
