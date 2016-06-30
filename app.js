@@ -8,10 +8,10 @@ const ledRed    = 3;
 const ledYellow = 4;
 const ledGreen  = 5;
 // Buttons pin
-const btnWhite  = 10;
-const btnRed    = 11;
-const btnYellow = 12;
-const btnGreen  = 13;
+const btnWhite  = 8;
+const btnRed    = 9;
+const btnYellow = 10;
+const btnGreen  = 11;
 
 var five     = require('johnny-five');
 var board    = new five.Board();
