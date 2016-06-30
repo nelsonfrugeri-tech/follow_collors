@@ -1,7 +1,7 @@
 "use strict";
 
-const TIME   = 1000;
-const MOVE   = 19;
+const TIME   = 500;
+const MOVE   = 9;
 // Leds pin
 const ledWhite  = 2;
 const ledRed    = 3;
@@ -65,16 +65,20 @@ function start() {
     }
     else {
         console.log("*--- Glorious in Victory ---*");
+        exit();
     }
 }
 
 function gameOver() {
     ledsOff();
     console.log("Game Over");
+    exit();
+}
 
+function exit() {
     setTimeout(function(){
         process.exit(1);
-    }, TIME);
+    }, (TIME * 2));
 }
 
 /*
@@ -210,7 +214,7 @@ function ledsOff(button) {
     leds.led[2].on();
     leds.led[3].on();
 
-    board.wait(800, function() {
+    board.wait(TIME, function() {
         leds.led[0].off();
         leds.led[1].off();
         leds.led[2].off();
