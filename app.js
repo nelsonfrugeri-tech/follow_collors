@@ -58,7 +58,7 @@ function start() {
         // For sequence event
         chosen      = [];
         random.push(gerRandom());
-        leds.amount = random.length;
+        leds.total = random.length;
 
         console.log(" *--- Move " + ++amount + "---* \n");
         sequence(0);
@@ -161,7 +161,7 @@ function sequence(counterSeq) {
         board.wait(TIME, function(){
             leds.led[pin].off();
 
-            if(counterSeq < (leds.amount - 1)) {
+            if(counterSeq < (leds.total - 1)) {
                 counterSeq++;
                 sequence(counterSeq);
             }
