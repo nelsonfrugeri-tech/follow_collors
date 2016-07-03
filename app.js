@@ -1,7 +1,7 @@
 "use strict";
 
 const TIME   = 500;
-const MOVE   = 9;
+const MOVE   = 10;
 // Leds pin
 const ledWhite  = 2;
 const ledRed    = 3;
@@ -51,7 +51,7 @@ board.on("ready", function() {
     for next sequence
 */
 function start() {
-    if(amount <= MOVE) {
+    if(amount < MOVE) {
         // For buttom event
         btnPress    = [];
         counter     = 0;
