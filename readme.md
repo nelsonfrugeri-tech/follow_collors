@@ -1,12 +1,13 @@
 # Follow Colors - Game for Internet of Things
 
 ## You need to run the project?
-* Arduino
+* One Arduino
+* One Protoboard
+* One Buzzer
 * Four Leds
 * Four Buttons
 * Four resistors
-* Fifteen Jumpers
-* One Protoboard
+* Seventeen Jumpers
 
 ## Install Node.js
 * https://www.digitalocean.com/community/tutorials/como-instalar-o-node-js-em-um-servidor-ubuntu-14-04-pt
