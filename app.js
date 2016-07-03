@@ -94,24 +94,28 @@ function match() {
             case ledWhite:
                 if(btnPress[i] !== btnWhite) {
                     gameOver();
+                    return false;
                 }
                 break;
             // Red
             case ledRed:
                 if(btnPress[i] !== btnRed) {
                     gameOver();
+                    return false;
                 }
                 break;
             // Yellow
             case ledYellow:
                 if(btnPress[i] !== btnYellow) {
                     gameOver();
+                    return false;
                 }
                 break;
             // Green
             case ledGreen:
                 if(btnPress[i] !== btnGreen) {
                     gameOver();
+                    return false;
                 }
                 break;
             default:
